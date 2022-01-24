@@ -13,6 +13,7 @@
 ActiveRecord::Schema.define(version: 2022_01_21_182723) do
 
   create_table "movies", force: :cascade do |t|
+    t.string "external_id"
     t.string "title"
     t.string "genre"
     t.string "year"

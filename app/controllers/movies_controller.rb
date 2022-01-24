@@ -44,6 +44,7 @@ class MoviesController < ApplicationController
       csv = CSV.read(file, headers: true)
       csv.each do |row|
         movie = Movie.find_or_initialize_by(title: row['title'])
+        movie.external_id = Digest::SHA2.hexdigest(row['title'])
         movie.genre = row['type']
         movie.year = row['release_year']
         movie.country = row['country']
@@ -59,7 +60,7 @@ class MoviesController < ApplicationController
   private
 
   def set_movie
-    @movie = Movie.find(params[:id])
+    @movie = Movie.find_by(external_id: params[:id])
   end
 
   def movie_params
@@ -68,7 +69,7 @@ class MoviesController < ApplicationController
 
   def map_movie(m)
     {
-      id: Digest::SHA2.hexdigest(m.id.to_s),
+      id: m.external_id,
       title: m.title,
       genre: m.genre,
       year: m.year,
